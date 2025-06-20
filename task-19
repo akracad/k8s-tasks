@@ -1,0 +1,144 @@
+
+---
+
+## ✅ **Task: Work with TLS Certificates in Kubernetes**
+
+### 🎯 **Objective:**
+
+Generate a private key & CSR, submit it to Kubernetes via a CSR object, approve it, extract the issued certificate, and prepare files for use in subsequent tasks.
+
+---
+
+### 📘 **Task List**
+
+---
+
+#### 🔹 **Task 1: Generate a Private Key & CSR**
+
+* [ ] Run OpenSSL to create a 2048‑bit RSA key named `learner.key`:
+
+  ```bash
+  openssl genrsa -out learner.key 2048
+  ```
+* [ ] Generate a CSR named `learner.csr` using your key:
+
+  ```bash
+  openssl req -new -key learner.key -out learner.csr \
+    -subj "/CN=learner/O=students"
+  ```
+* [ ] Verify CSR contents:
+
+  ```bash
+  openssl req -in learner.csr -noout -text
+  ```
+
+---
+
+#### 🔹 **Task 2: Create a Kubernetes CSR Object**
+
+* [ ] Base64‑encode the CSR, and save to an environment variable:
+
+  ```bash
+  CSR_BASE64=$(base64 -w0 < learner.csr)
+  ```
+* [ ] Create a YAML manifest `learner-csr.yaml` for a `CertificateSigningRequest`:
+
+  ```yaml
+  apiVersion: certificates.k8s.io/v1
+  kind: CertificateSigningRequest
+  metadata:
+    name: learner-csr
+  spec:
+    request: ${CSR_BASE64}
+    signerName: kubernetes.io/kube-apiserver-client
+    usages:
+      - digital signature
+      - key encipherment
+      - client auth
+    expirationSeconds: 604800  # 7 days
+  ```
+* [ ] Apply the CSR object:
+
+  ```bash
+  kubectl apply -f learner-csr.yaml
+  ```
+
+---
+
+#### 🔹 **Task 3: Approve the CSR**
+
+* [ ] List pending CSRs:
+
+  ```bash
+  kubectl get csr
+  ```
+* [ ] Approve your CSR:
+
+  ```bash
+  kubectl certificate approve learner-csr
+  ```
+
+---
+
+#### 🔹 **Task 4: Retrieve & Export the Issued Certificate**
+
+* [ ] Get the issued certificate (base64‑encoded) from the CSR status:
+
+  ```bash
+  kubectl get csr learner-csr -o jsonpath='{.status.certificate}' > learner.crt.base64
+  ```
+* [ ] Decode and save to `learner.crt`:
+
+  ```bash
+  base64 -d learner.crt.base64 > learner.crt
+  ```
+* [ ] (Optional) Export the CSR object with status to YAML:
+
+  ```bash
+  kubectl get csr learner-csr -o yaml > learner-csr-export.yaml
+  ```
+
+---
+
+#### 🔹 **Task 5: Verify & Prepare for Next Task**
+
+* [ ] Confirm you have:
+
+  * `learner.key` (private key)
+  * `learner.csr` (original CSR)
+  * `learner.crt` (issued certificate)
+  * `learner-csr.yaml` & `learner-csr-export.yaml` (K8s objects)
+* [ ] Inspect certificate details:
+
+  ```bash
+  openssl x509 -in learner.crt -noout -text
+  ```
+
+---
+
+### 📝 **Task 6: Document Your Learnings**
+
+* Combine this sub‑task with Day 21 in a single blog post:
+
+  * Key steps, commands, and YAML snippets
+  * Why CSR objects are used in Kubernetes
+  * How expirationSeconds controls certificate lifetime
+  * Common pitfalls and troubleshooting tips
+
+---
+
+### 📢 **Task 7: Share Publicly**
+
+* Publish on **LinkedIn** or **Twitter**:
+
+  * Summarize your process and takeaways
+  * Attach YAML/code snippets or screenshots
+  * Use hashtags and tags:
+
+    ```
+    #Kubernetes #TLS #Certificates #DevOps #LearningInPublic
+    ```
+  * Tag your instructors or community
+
+---
+
