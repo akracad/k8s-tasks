@@ -1,0 +1,87 @@
+
+---
+
+## ✅ **Kubernetes Task: Explore DaemonSet, CronJob, and Job**
+
+### 🎯 Objective:
+
+Understand and implement **DaemonSet**, **CronJob**, and **Job** in Kubernetes to manage node-level workloads and scheduled tasks.
+
+---
+
+### 📘 **Task List**
+
+#### 🔹 Task 1: Create a DaemonSet
+
+* [ ] Create a DaemonSet using the `busybox` image.
+* [ ] The container should run the following command in a loop:
+  `while true; do echo Daemon running on $(hostname); sleep 30; done`
+* [ ] Confirm that the DaemonSet creates **one Pod per node** in the cluster.
+* [ ] Use `kubectl get pods -o wide` to verify that Pods are spread across all nodes.
+
+---
+
+#### 🔹 Task 2: Understand and Apply Cron Syntax
+
+* [ ] Research and understand basic cron expression format.
+* [ ] Identify the correct cron expression for scheduling every 5 minutes:
+  `*/5 * * * *`
+
+---
+
+#### 🔹 Task 3: Create a CronJob
+
+* [ ] Create a CronJob in Kubernetes using the `busybox` image.
+* [ ] The job should run every 5 minutes and print:
+  `"40daysofkubernetes"`
+* [ ] Set `restartPolicy: OnFailure`
+* [ ] Apply the CronJob and confirm it's scheduled correctly:
+
+  * Use `kubectl get cronjobs`
+  * Use `kubectl get jobs --watch` to observe job execution
+
+---
+
+#### 🔹 Task 4: Verify Output
+
+* [ ] Check logs of the executed job Pods to confirm the message was printed:
+
+  ```bash
+  kubectl logs <job-pod-name>
+  ```
+
+---
+
+#### 🔹 Task 5: Clean Up Resources
+
+* [ ] Delete the DaemonSet
+* [ ] Delete the CronJob
+
+  ```bash
+  kubectl delete daemonset <name>
+  kubectl delete cronjob <name>
+  ```
+
+---
+
+#### 📓 Task 6: Document Learnings
+
+* [ ] Write a short summary explaining:
+
+  * What is a DaemonSet and when to use it
+  * What is a CronJob and its real-world use cases
+  * What is the difference between a CronJob and a one-time Job
+  * How cron expressions work
+* [ ] Include code snippets, YAMLs, and command outputs in your notes or blog
+
+---
+
+#### 📢 Task 7: Share Publicly
+
+* [ ] Share your experience on LinkedIn or Twitter.
+* [ ] Mention what you implemented and learned.
+* [ ] Tag the project or mentors if applicable.
+* [ ] Use the hashtag:
+  `#Kubernetes #DevOps #LearningInPublic #40DaysOfKubernetes`
+
+---
