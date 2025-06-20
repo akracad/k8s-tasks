@@ -1,0 +1,164 @@
+
+---
+
+## ✅ **Task: Explore RBAC, Role, and RoleBinding in Kubernetes**
+
+### 🎯 Objective:
+
+Learn how Kubernetes RBAC works by testing access as a non-admin user and creating `Role` and `RoleBinding` objects to grant granular permissions.
+
+---
+
+### 🧠 Prerequisites
+
+* Working Kubernetes cluster with `kubectl` configured.
+* You have a non-admin user (e.g., `krishna`) and context already created (from Day 22 TLS task).
+* Admin context (e.g., `admin`) is still available and functional.
+
+---
+
+### 📘 Task Checklist
+
+---
+
+### 🔹 **Task 1: Check Default Permissions for the User**
+
+1. 🔀 **Switch to the non-admin user context (e.g., `krishna`)**:
+
+   ```bash
+   kubectl config use-context krishna
+   ```
+
+2. 🚀 **Try to create a Pod**:
+
+   ```bash
+   kubectl run test-pod --image=nginx
+   ```
+
+3. ❓ **Expected Result**:
+   You should receive a **“forbidden”** error. The user `krishna` doesn't have permissions to create resources yet.
+
+---
+
+### 🔹 **Task 2: Grant Pod Viewing Permissions**
+
+4. 🔀 **Switch back to admin context**:
+
+   ```bash
+   kubectl config use-context admin
+   ```
+
+5. 📜 **Create a Role named `pod-reader`** with `get`, `watch`, and `list` permissions for Pods:
+
+   ```yaml
+   apiVersion: rbac.authorization.k8s.io/v1
+   kind: Role
+   metadata:
+     namespace: default
+     name: pod-reader
+   rules:
+   - apiGroups: [""]
+     resources: ["pods"]
+     verbs: ["get", "watch", "list"]
+   ```
+
+   Apply it:
+
+   ```bash
+   kubectl apply -f pod-reader-role.yaml
+   ```
+
+6. 🔗 **Create a RoleBinding named `read-pods`**, binding the user `krishna` to the role:
+
+   ```yaml
+   apiVersion: rbac.authorization.k8s.io/v1
+   kind: RoleBinding
+   metadata:
+     name: read-pods
+     namespace: default
+   subjects:
+   - kind: User
+     name: krishna
+     apiGroup: rbac.authorization.k8s.io
+   roleRef:
+     kind: Role
+     name: pod-reader
+     apiGroup: rbac.authorization.k8s.io
+   ```
+
+   Apply it:
+
+   ```bash
+   kubectl apply -f read-pods-binding.yaml
+   ```
+
+7. ✅ **Verify** the Role and RoleBinding:
+
+   ```bash
+   kubectl get role pod-reader -n default
+   kubectl get rolebinding read-pods -n default
+   ```
+
+---
+
+### 🔹 **Task 3: Re-Test Access as the User**
+
+8. 🔀 **Switch back to `krishna` context**:
+
+   ```bash
+   kubectl config use-context krishna
+   ```
+
+9. 🚫 **Try to create a Pod again**:
+
+   ```bash
+   kubectl run nginx --image=nginx
+   ```
+
+   **Expected Result**: You should still get a **“forbidden”** error—`krishna` has read-only access.
+
+10. 👀 **List Pods**:
+
+    ```bash
+    kubectl get pods
+    ```
+
+    ✅ **Expected Result**: This **should succeed**. You now have permission to read pods.
+
+11. 🚫 **Try to create a Deployment**:
+
+    ```bash
+    kubectl create deployment nginx-deploy --image=nginx
+    ```
+
+    ❌ **Expected Result**: This should **fail**, since your role does not include `deployments` or `create` verb.
+
+---
+
+### 📝 **Task 4: Document Your Learnings**
+
+In your blog post or notes, include:
+
+* What is RBAC?
+* Difference between Role and ClusterRole
+* When to use RoleBinding vs ClusterRoleBinding
+* Why `krishna` could list Pods but not create them
+* YAMLs used for the Role and RoleBinding
+
+---
+
+### 📢 **Task 5: Share Your Work Publicly**
+
+* [ ] Write a short summary on **LinkedIn or Twitter**
+* [ ] Include:
+
+  * Key takeaways from exploring RBAC
+  * Screenshots of command results or YAMLs
+  * Hashtags:
+
+    ```
+    #Kubernetes #RBAC #DevOps #LearningInPublic #40DaysOfKubernetes
+    ```
+
+---
+
