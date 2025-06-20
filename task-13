@@ -1,0 +1,159 @@
+
+---
+
+## ✅ **Kubernetes Task: Node Affinity in Pod Scheduling**
+
+### 🎯 Objective:
+
+Learn how to use **Node Affinity rules** to control which nodes a Pod can be scheduled on based on node labels. This exercise uses both matching and presence-based affinity.
+
+---
+
+### 🧠 Prerequisites:
+
+* A running Kubernetes cluster (e.g., KIND, minikube, kOps)
+* `kubectl` installed and configured
+* Access to at least 2 worker nodes (`worker01`, `worker02`)
+
+---
+
+### 📘 Task List
+
+---
+
+### 🔹 **Task 1: Create a Pod with Node Affinity for `disktype=ssd`**
+
+* [ ] Create a pod named `nginx-affinity` using the `nginx` image.
+
+* [ ] Add **Node Affinity** using `requiredDuringSchedulingIgnoredDuringExecution` with the following condition:
+
+  ```yaml
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: disktype
+          operator: In
+          values:
+          - ssd
+  ```
+
+* [ ] Apply the pod manifest:
+
+  ```bash
+  kubectl apply -f nginx-affinity.yaml
+  ```
+
+* [ ] Check the pod status:
+
+  ```bash
+  kubectl get pods -o wide
+  kubectl describe pod nginx-affinity
+  ```
+
+✅ **Expected:** The pod should remain in `Pending` state because no node is labeled with `disktype=ssd`.
+
+---
+
+### 🔹 **Task 2: Label Node and Trigger Scheduling**
+
+* [ ] Label the node `worker01` with the required label:
+
+  ```bash
+  kubectl label node worker01 disktype=ssd
+  ```
+
+* [ ] Recheck the status of the pod:
+
+  ```bash
+  kubectl get pods -o wide
+  ```
+
+✅ **Expected:** The pod `nginx-affinity` should now be scheduled on `worker01`.
+
+---
+
+### 🔹 **Task 3: Create Pod with Presence-Based Node Affinity**
+
+* [ ] Create another pod named `redis-affinity` using the `redis` image.
+
+* [ ] Add Node Affinity with `operator: Exists` and the same key `disktype`:
+
+  ```yaml
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: disktype
+          operator: Exists
+  ```
+
+* [ ] Apply the pod manifest:
+
+  ```bash
+  kubectl apply -f redis-affinity.yaml
+  ```
+
+✅ **Expected:** Pod will not schedule yet.
+
+---
+
+### 🔹 **Task 4: Label Node with Empty Value**
+
+* [ ] Label node `worker02` with `disktype` key (no value):
+
+  ```bash
+  kubectl label node worker02 disktype-
+  kubectl label node worker02 disktype=""
+  ```
+
+* [ ] Check the scheduling of `redis-affinity`:
+
+  ```bash
+  kubectl get pods -o wide
+  ```
+
+✅ **Expected:** Pod should be scheduled on `worker02`, since only the key is checked.
+
+---
+
+### 🧹 **Task 5: Cleanup (Optional)**
+
+* [ ] Delete the created pods:
+
+  ```bash
+  kubectl delete pod nginx-affinity redis-affinity
+  ```
+
+* [ ] Remove labels (optional):
+
+  ```bash
+  kubectl label node worker01 disktype-
+  kubectl label node worker02 disktype-
+  ```
+
+---
+
+### 📝 **Task 6: Document Your Learnings**
+
+Write a brief blog post or notes explaining:
+
+* What is Node Affinity?
+* Types: `requiredDuringSchedulingIgnoredDuringExecution` vs `preferredDuringSchedulingIgnoredDuringExecution`
+* Difference between `In` and `Exists` operators
+* Real-world use cases: node hardware requirements, GPU nodes, SSD-only workloads
+* Commands and YAMLs used
+
+---
+
+### 📢 **Task 7: Share Publicly**
+
+* [ ] Share your learnings on **LinkedIn or Twitter**
+* [ ] Include:
+
+  * Summary of what you did
+  * Key takeaways about Node Affinity
+  * YAML snippet or screenshot of pods scheduled to different nodes
+  * Tags:
+    `#Kubernetes #CKA #LearningInPublic #40DaysOfKubernetes`
+
