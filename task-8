@@ -1,0 +1,97 @@
+
+---
+
+## ✅ **Kubernetes Lab Task: Namespace Isolation & Cross-Namespace Communication**
+
+### 🎯 Objective:
+
+Learn how Kubernetes namespaces, deployments, services, and DNS resolution work together for intra- and inter-namespace communication.
+
+---
+
+### 📘 Task List
+
+#### 🧱 **Task 1: Create Isolated Environments**
+
+* [ ] Create two namespaces:
+
+  * `ns1`
+  * `ns2`
+
+---
+
+#### 🚀 **Task 2: Deploy Applications**
+
+* [ ] In namespace `ns1`, create a deployment:
+
+  * Name: `deploy-ns1`
+  * Image: `nginx`
+  * Replicas: 1
+
+* [ ] In namespace `ns2`, create a deployment:
+
+  * Name: `deploy-ns2`
+  * Image: `nginx`
+  * Replicas: 1
+
+---
+
+#### 🌐 **Task 3: Pod-to-Pod Communication**
+
+* [ ] Get the IP address of the pod in `deploy-ns2`
+* [ ] Exec into a pod from `deploy-ns1` and:
+
+  * [ ] Use `curl` to access the pod IP of `deploy-ns2`
+  * [ ] Confirm successful NGINX response
+
+---
+
+#### 🔁 **Task 4: Scale Up Deployments**
+
+* [ ] Scale both deployments to 3 replicas each
+* [ ] Confirm all pods are running
+
+---
+
+#### 📡 **Task 5: Create Services**
+
+* [ ] Expose `deploy-ns1` as a service `svc-ns1` (port 80)
+* [ ] Expose `deploy-ns2` as a service `svc-ns2` (port 80)
+
+---
+
+#### 🔍 **Task 6: Service-to-Service Communication (Cross-Namespace)**
+
+* [ ] From a pod in `ns1`, run:
+
+  * [ ] `curl <ClusterIP of svc-ns2>` → should work
+  * [ ] `curl svc-ns2` → should fail (namespace mismatch)
+  * [ ] `curl svc-ns2.ns2.svc.cluster.local` → should work
+
+---
+
+#### 🧹 **Task 7: Cleanup**
+
+* [ ] Delete both namespaces:
+
+  * `ns1`
+  * `ns2`
+* [ ] Confirm all associated resources are removed
+
+---
+
+### 📢 **Task 8: Document & Share Learnings**
+
+* [ ] Write a short blog or markdown post:
+
+  * Pod-to-pod and service communication
+  * Importance of FQDN for cross-namespace access
+  * How services behave inside namespaces
+  * Screenshots or CLI outputs
+* [ ] Share your key takeaways publicly on LinkedIn or Twitter:
+
+  * Use hashtags: `#Kubernetes #CKA #LearningInPublic`
+  * Mention: Cross-namespace communication + service DNS
+
+---
+
