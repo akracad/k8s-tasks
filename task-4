@@ -1,0 +1,136 @@
+
+---
+
+## 🚀 **Task: Practice Kubernetes Locally Using KIND (Kubernetes IN Docker)**
+
+### 🎯 **Goal:**
+
+Learn to deploy and manage single-node and multi-node Kubernetes clusters locally using KIND, and reflect on the experience through documentation and public sharing.
+
+---
+
+### 📝 **Part 1: Watch & Document**
+
+* 📺 **Watch the assigned video** on KIND and local Kubernetes.
+* 🧠 **Take notes** and summarize your learnings.
+* Document:
+
+  * What KIND is and how it works
+  * Key advantages of using KIND for local Kubernetes learning
+  * Challenges you faced (if any)
+
+---
+
+### ⚙️ **Part 2: Install KIND and Run Clusters**
+
+#### 🔧 Step 1: **Install a Single-Node KIND Cluster**
+
+* Follow the official KIND documentation: [https://kind.sigs.k8s.io/docs/user/quick-start/](https://kind.sigs.k8s.io/docs/user/quick-start/)
+* Use Kubernetes version `v1.29.0`
+
+```bash
+kind create cluster --name kind-single --image kindest/node:v1.29.0
+```
+
+✅ After creation, verify:
+
+```bash
+kubectl cluster-info --context kind-kind-single
+kubectl get nodes
+```
+
+#### 🧹 Step 2: **Delete the Single-Node Cluster**
+
+```bash
+kind delete cluster --name kind-single
+```
+
+---
+
+#### 🔁 Step 3: **Create a Multi-Node KIND Cluster**
+
+* Cluster Name: `cka-cluster2`
+* Nodes:
+
+  * 1 control plane
+  * 3 worker nodes
+* Kubernetes Version: `v1.30.0`
+
+📄 Create a config file `multi-node-cluster.yaml`:
+
+```yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: cka-cluster2
+nodes:
+  - role: control-plane
+  - role: worker
+  - role: worker
+  - role: worker
+```
+
+🧱 Create the cluster:
+
+```bash
+kind create cluster --config=multi-node-cluster.yaml --image kindest/node:v1.30.0
+```
+
+---
+
+### 🖥️ **Part 3: Install & Configure kubectl**
+
+* Follow: [https://kubernetes.io/docs/tasks/tools/](https://kubernetes.io/docs/tasks/tools/)
+* After install:
+
+```bash
+kubectl version --client
+kubectl config use-context kind-cka-cluster2
+kubectl get nodes
+```
+
+✅ You should see 4 nodes: 1 control-plane and 3 workers
+
+---
+
+### 🐳 **Part 4: KIND Nodes as Docker Containers**
+
+Run:
+
+```bash
+docker ps
+```
+
+✅ You’ll see each Kubernetes node is actually a running Docker container. Mention this in your write-up.
+
+---
+
+### ✍️ **Part 5: Reflect & Share**
+
+#### 📓 Blog or Documentation
+
+* What you learned about KIND and local Kubernetes
+* Difference between single-node and multi-node setups
+* How KIND works behind the scenes
+* Screenshots or terminal output
+* Link to the video + any official docs used
+
+#### 📢 Social Media Post (LinkedIn/Twitter)
+
+* Summarize your learning
+* Mention KIND + Kubernetes
+* Use hashtags like `#Kubernetes #KIND #CloudNative #CKA`
+
+---
+
+### ✅ **Final Deliverables**
+
+* [ ] ✅ Single-node cluster created & deleted
+* [ ] ✅ Multi-node cluster created with custom config
+* [ ] ✅ kubectl installed and configured
+* [ ] ✅ Verified nodes with `kubectl get nodes`
+* [ ] ✅ Verified containers with `docker ps`
+* [ ] ✅ Blog or markdown doc created
+* [ ] ✅ LinkedIn/Twitter post with learnings
+
+---
+
