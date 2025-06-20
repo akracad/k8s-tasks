@@ -1,0 +1,121 @@
+
+---
+
+## ✅ **Kubernetes Task: Explore Kubernetes Autoscaling (HPA, VPA, Cluster Autoscaler)**
+
+### 🎯 **Objective:**
+
+Learn how Kubernetes automatically scales workloads and nodes using **Horizontal Pod Autoscaler (HPA)**, **Vertical Pod Autoscaler (VPA)**, and **Cluster Autoscaler (CA)**.
+
+---
+
+### 🧠 **Prerequisites**
+
+* A running Kubernetes cluster (e.g., KIND, minikube, or kOps)
+* `kubectl` configured
+* Metrics Server installed (required for HPA)
+* Optional: Cluster autoscaler enabled on cloud provider or simulated for KIND
+
+---
+
+### 📘 **Task List**
+
+---
+
+### 🔹 Task 1: Horizontal Pod Autoscaler (HPA)
+
+* [ ] Deploy a sample deployment with CPU resource requests (e.g., `php-apache`, `nginx`, or custom app).
+* [ ] Apply an HPA that:
+
+  * Scales between 1 and 5 pods
+  * Uses average CPU utilization target (e.g., 50%)
+
+Example:
+
+```bash
+kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=5
+```
+
+* [ ] Generate load using tools like `kubectl run -it --rm load-generator --image=busybox /bin/sh`
+* [ ] Monitor the scaling:
+
+  ```bash
+  kubectl get hpa
+  kubectl get pods
+  ```
+
+✅ **Expected:** Pod replicas increase with CPU usage and scale down once idle.
+
+---
+
+### 🔹 Task 2: Vertical Pod Autoscaler (VPA)
+
+* [ ] Install VPA components (if not already included):
+
+  ```bash
+  kubectl apply -f https://github.com/kubernetes/autoscaler/releases/latest/download/vertical-pod-autoscaler.yaml
+  ```
+
+* [ ] Apply a sample deployment with CPU/memory requests.
+
+* [ ] Attach a VPA policy to recommend or auto-adjust resource usage.
+
+Example YAML snippet:
+
+```yaml
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: demo-vpa
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind: Deployment
+    name: my-app
+  updatePolicy:
+    updateMode: "Auto"
+```
+
+* [ ] Observe the recommendations and pod restarts with new resource values:
+
+  ```bash
+  kubectl describe vpa demo-vpa
+  ```
+
+---
+
+### 🔹 Task 3: Cluster Autoscaler (CA) *(Advanced / Cloud Providers)*
+
+> Optional if you're using KIND or minikube (manual simulation may be needed)
+
+* [ ] Deploy Cluster Autoscaler on a supported cloud provider (EKS, GKE, AKS).
+* [ ] Deploy a workload that requests more resources than the current node capacity.
+* [ ] Observe autoscaler adding new nodes to accommodate the workload.
+* [ ] Reduce workload and verify that unused nodes are removed.
+
+---
+
+### 📝 Task 4: Document Your Learnings
+
+* [ ] Write a blog post or summary that includes:
+
+  * What is HPA, VPA, and Cluster Autoscaler?
+  * When to use each autoscaler?
+  * Difference between autoscaling pods vs nodes
+  * YAML examples and `kubectl` commands used
+  * Observations during load and scaling
+
+---
+
+### 📢 Task 5: Share Publicly
+
+* [ ] Share your learnings on **LinkedIn or Twitter**
+* [ ] Include:
+
+  * Key takeaways
+  * Screenshots, graphs (e.g., HPA behavior from `kubectl get hpa`)
+  * Tag relevant mentors or communities
+  * Use hashtags:
+    `#Kubernetes #DevOps #CKA #HPA #VPA #ClusterAutoscaler #40DaysOfKubernetes`
+
+---
