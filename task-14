@@ -1,0 +1,135 @@
+
+---
+
+## ✅ **Kubernetes Task: Configure Resource Requests and Limits**
+
+### 🎯 **Objective:**
+
+Understand and configure **CPU and Memory resource requests and limits** in Kubernetes, and observe how they affect pod behavior.
+
+---
+
+### 🧠 **Prerequisites**
+
+* A running Kubernetes cluster (e.g., KIND, minikube, kOps)
+* `kubectl` configured
+* Internet access for installing Metrics Server
+
+---
+
+### 📘 **Task List**
+
+---
+
+### 🏷️ **Task 1: Create Namespace**
+
+* [ ] Create a namespace named `mem-example`:
+
+  ```bash
+  kubectl create namespace mem-example
+  ```
+
+---
+
+### 📊 **Task 2: Install Metrics Server**
+
+* [ ] Download and install the Metrics Server:
+
+  ```bash
+  kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+  ```
+
+* [ ] Verify that it is running:
+
+  ```bash
+  kubectl get deployment metrics-server -n kube-system
+  kubectl top nodes
+  ```
+
+✅ You should now be able to monitor resource usage via `kubectl top`.
+
+---
+
+### 📦 **Task 3: Configure Resource Requests and Limits**
+
+Follow the official doc:
+📄 [Kubernetes: Assign Memory Resource](https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-resource/#specify-a-memory-request-and-a-memory-limit)
+
+* [ ] Create a pod manifest named `memory-demo.yaml` in the `mem-example` namespace with:
+
+  * Image: `polinux/stress`
+  * Memory request: `100Mi`
+  * Memory limit: `200Mi`
+
+Example:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-demo
+  namespace: mem-example
+spec:
+  containers:
+  - name: memory-demo-ctr
+    image: polinux/stress
+    resources:
+      requests:
+        memory: "100Mi"
+      limits:
+        memory: "200Mi"
+    command: ["stress"]
+    args: ["--vm", "1", "--vm-bytes", "150M", "--vm-hang", "1"]
+```
+
+* [ ] Apply the pod:
+
+  ```bash
+  kubectl apply -f memory-demo.yaml
+  ```
+
+* [ ] Monitor resource usage:
+
+  ```bash
+  kubectl top pod memory-demo -n mem-example
+  ```
+
+---
+
+### 🚫 **Task 4: Exceed Resource Limit (Optional Stress Test)**
+
+* [ ] Modify the pod to request more memory than the limit (e.g., 250Mi)
+* [ ] Re-deploy and observe the pod behavior (should be OOMKilled or evicted):
+
+  ```bash
+  kubectl describe pod memory-demo -n mem-example
+  ```
+
+---
+
+### 📝 **Task 5: Document Your Learnings**
+
+Include in your blog or notes:
+
+* Difference between **requests** and **limits**
+* Why defining both is important in production
+* How Kubernetes uses these values during scheduling and runtime
+* How OOM (Out of Memory) events occur
+* Real-world use cases: controlling noisy neighbors, resource guarantees
+
+---
+
+### 📢 **Task 6: Share Publicly**
+
+* [ ] Share your experience on **LinkedIn or Twitter**
+* [ ] Include:
+
+  * Summary of what you learned
+  * Example YAML or screenshots of `kubectl top` output
+  * Tag relevant peers or instructors
+  * Use hashtags:
+    `#Kubernetes #DevOps #CKA #LearningInPublic #40DaysOfKubernetes`
+
+---
+
+
