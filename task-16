@@ -1,0 +1,167 @@
+
+---
+
+## ✅ **Kubernetes Task: Explore Liveness & Readiness Probes**
+
+### 🎯 Objective:
+
+Understand how **liveness** and **readiness probes** work in Kubernetes and how they help maintain application health and availability.
+
+---
+
+### 🧠 Prerequisites
+
+* A working Kubernetes cluster (e.g., KIND, minikube, kOps, or cloud-based)
+* `kubectl` configured
+* Basic knowledge of Pod definitions and YAML
+
+---
+
+### 📘 Task List
+
+---
+
+### 🔹 **Task 1: Create a Pod with an Exec-based Liveness Probe**
+
+1. 🛠️ Create a Pod named `busybox-probe` with:
+
+   * Image: `registry.k8s.io/busybox`
+   * Command:
+
+     ```bash
+     touch /tmp/healthy; sleep 30; rm -f /tmp/healthy; sleep 600
+     ```
+   * A **livenessProbe** that checks:
+
+     * Every 5 seconds
+     * Starts after an initial delay of 5 seconds
+     * Executes: `cat /tmp/healthy`
+
+2. ✅ Expected behavior:
+
+   * The pod starts as healthy.
+   * After 30 seconds, the `/tmp/healthy` file is deleted.
+   * The liveness probe starts failing.
+   * Kubernetes restarts the container.
+
+**Sample YAML:**
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox-probe
+spec:
+  containers:
+  - name: busybox
+    image: registry.k8s.io/busybox
+    command: ["/bin/sh", "-c", "touch /tmp/healthy; sleep 30; rm -f /tmp/healthy; sleep 600"]
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 5
+      periodSeconds: 5
+```
+
+Apply with:
+
+```bash
+kubectl apply -f busybox-probe.yaml
+```
+
+Check status:
+
+```bash
+kubectl describe pod busybox-probe
+```
+
+---
+
+### 🔹 **Task 2: Create a Pod with HTTP Liveness & Readiness Probes**
+
+1. 🛠️ Create a Pod named `agnhost-probe` with:
+
+   * Image: `registry.k8s.io/e2e-test-images/agnhost:2.40`
+   * Container port: `8080`
+   * Both **liveness** and **readiness** probes:
+
+     * HTTP GET on path `/healthz`
+     * Port: 8080
+     * Initial delay: 5 seconds
+     * Period: 10 seconds
+
+2. ✅ Expected behavior:
+
+   * Kubernetes checks health via the `/healthz` endpoint.
+   * If health fails:
+
+     * Readiness → pod is removed from service endpoints
+     * Liveness → pod is restarted
+
+**Sample YAML:**
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: agnhost-probe
+spec:
+  containers:
+  - name: agnhost
+    image: registry.k8s.io/e2e-test-images/agnhost:2.40
+    args: ["healthz"]
+    ports:
+    - containerPort: 8080
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 10
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 10
+```
+
+Apply with:
+
+```bash
+kubectl apply -f agnhost-probe.yaml
+```
+
+Monitor:
+
+```bash
+kubectl get pods
+kubectl describe pod agnhost-probe
+```
+
+---
+
+### 📝 **Task 3: Document Your Learnings**
+
+In your blog or notes, include:
+
+* ✅ What are **liveness** and **readiness** probes?
+* 🔍 Why probes matter in production (e.g., avoiding serving from crashed containers)
+* 🧪 Difference between HTTP vs exec vs TCP probes
+* 🔄 Real-world scenarios where liveness restarts or readiness unserving is critical
+* 📜 YAML snippets and logs of pod restarts or transitions
+
+---
+
+### 📢 **Task 4: Share Publicly**
+
+* [ ] Post your findings and takeaways on **LinkedIn or Twitter**
+* [ ] Include:
+
+  * Screenshots, YAML, key tips
+  * Mention technologies used: `#Kubernetes #DevOps #CKA #Probes #LearningInPublic #40DaysOfKubernetes`
+
+---
+
