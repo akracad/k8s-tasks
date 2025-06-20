@@ -1,0 +1,167 @@
+
+---
+
+## 🚀 Kubernetes Hands-On Tasks (Pods & YAMLs)
+
+---
+
+### ✅ **Task 1: Create a Pod Imperatively**
+
+Create a pod named `nginx` using the `nginx` image:
+
+```bash
+kubectl run nginx --image=nginx
+```
+
+✅ Verify it:
+
+```bash
+kubectl get pods
+kubectl describe pod nginx
+```
+
+---
+
+### ✅ **Task 2: Generate YAML and Reuse**
+
+#### Step 1: Export the pod YAML:
+
+```bash
+kubectl get pod nginx -o yaml > nginx.yaml
+```
+
+#### Step 2: Edit the file
+
+* Change the `metadata.name` to `nginx-new`
+* Remove any auto-generated fields like:
+
+  * `status`
+  * `uid`
+  * `creationTimestamp`
+  * `resourceVersion`
+  * `selfLink`
+  * `managedFields`
+
+#### Step 3: Apply the YAML to create the new pod:
+
+```bash
+kubectl apply -f nginx.yaml
+```
+
+✅ Verify:
+
+```bash
+kubectl get pods
+kubectl describe pod nginx-new
+```
+
+---
+
+### ✅ **Task 3: Apply and Fix This Broken YAML**
+
+#### Given YAML:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: test
+  name: redis
+spec:
+  containers:
+  - image: rediss
+    name: redis
+```
+
+---
+
+#### Step 1: Try to apply:
+
+```bash
+kubectl apply -f redis.yaml
+```
+
+#### ❌ Expected Error:
+
+```plaintext
+Failed to pull image "rediss": rpc error: ...
+```
+
+---
+
+#### 🛠️ Fixes:
+
+1. **Image Name Typo**: `rediss` is incorrect → should be `redis`
+
+   * Edit the file:
+
+     ```bash
+     nano redis.yaml
+     ```
+
+     Change:
+
+     ```yaml
+     image: rediss
+     ```
+
+     To:
+
+     ```yaml
+     image: redis
+     ```
+
+2. **Reapply:**
+
+```bash
+kubectl apply -f redis.yaml
+```
+
+✅ Verify:
+
+```bash
+kubectl get pods
+kubectl describe pod redis
+kubectl logs redis
+```
+
+---
+
+### 📓 **What to Document (Learning & Troubleshooting)**
+
+* 📌 Imperative vs declarative approaches
+* 📌 YAML structure: `metadata`, `spec`, `containers`
+* 📌 Common issues:
+
+  * Invalid image name
+  * Auto-generated metadata causing reuse errors
+* 📌 Logs and describe commands for debugging
+
+---
+
+### 📢 **Share Your Learnings**
+
+#### ✍️ Blog/Documentation
+
+Include:
+
+* Commands used
+* Screenshots (optional)
+* What you learned
+* Errors and how you fixed them
+
+#### 🌍 Social Media Post (LinkedIn/Twitter)
+
+* Summary of your hands-on experience
+* Highlight: how you debugged the YAML error
+* Use hashtags:
+  `#Kubernetes #K8s #DevOps #CloudNative #CKA #LearningInPublic`
+* Tag your mentor/organization if applicable
+
+✅ Example:
+
+> "Today I practiced creating and troubleshooting Pods in Kubernetes 🐳. From imperative pod creation to fixing YAML errors (yes, rediss got me 😅), it was a great hands-on dive into #K8s. #DevOps #CKA #LearningInPublic"
+
+---
+
