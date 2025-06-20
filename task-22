@@ -1,0 +1,158 @@
+
+---
+
+## ✅ **Task: Authentication & Authorization with Kubernetes Service Accounts**
+
+### 🎯 **Objective:**
+
+Understand how Service Accounts are used in Kubernetes for authentication and how you can authorize them to perform actions on cluster resources using RBAC.
+
+---
+
+### 📘 **Task Checklist**
+
+---
+
+### 🔹 **Task 1: Learn the Concept (📺 & 📖)**
+
+* [ ] Watch the demo video provided.
+* [ ] Understand:
+
+  * What is a **ServiceAccount** in Kubernetes?
+  * How is a **ServiceAccount token** used for **authentication**?
+  * How does **RBAC authorize** a ServiceAccount?
+  * Difference between default and custom service accounts.
+
+---
+
+### 🔹 **Task 2: Create a Custom ServiceAccount**
+
+* [ ] Create a new ServiceAccount named `reporter` in the `default` namespace:
+
+  ```bash
+  kubectl create serviceaccount reporter
+  ```
+
+* [ ] Verify the creation:
+
+  ```bash
+  kubectl get serviceaccounts reporter
+  ```
+
+---
+
+### 🔹 **Task 3: Assign Permissions using RBAC**
+
+* [ ] Create a Role named `pod-reader` (if not already present) with permissions to `get`, `list`, and `watch` pods:
+
+  ```yaml
+  apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    name: pod-reader
+    namespace: default
+  rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  ```
+
+* [ ] Bind the `reporter` ServiceAccount to the `pod-reader` Role using a RoleBinding:
+
+  ```yaml
+  apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    name: reporter-pod-read
+    namespace: default
+  subjects:
+  - kind: ServiceAccount
+    name: reporter
+    namespace: default
+  roleRef:
+    kind: Role
+    name: pod-reader
+    apiGroup: rbac.authorization.k8s.io
+  ```
+
+* [ ] Apply both YAMLs and verify:
+
+  ```bash
+  kubectl get role pod-reader -n default
+  kubectl get rolebinding reporter-pod-read -n default
+  ```
+
+---
+
+### 🔹 **Task 4: Use the ServiceAccount in a Pod**
+
+* [ ] Create a Pod that uses the `reporter` ServiceAccount:
+
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: reporter-pod
+  spec:
+    serviceAccountName: reporter
+    containers:
+    - name: busybox
+      image: busybox
+      command: ["sh", "-c", "sleep 3600"]
+  ```
+
+* [ ] Apply it and exec into the pod:
+
+  ```bash
+  kubectl exec -it reporter-pod -- sh
+  ```
+
+* [ ] From inside the pod, try:
+
+  ```bash
+  curl -s --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+       --header "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
+       https://kubernetes.default.svc/api/v1/namespaces/default/pods
+  ```
+
+✅ This should return pod info — confirming the SA is authenticated and authorized.
+
+---
+
+### 🧹 **Task 5: Clean Up (Optional)**
+
+* [ ] Delete the created resources after testing:
+
+  ```bash
+  kubectl delete pod reporter-pod
+  kubectl delete role pod-reader
+  kubectl delete rolebinding reporter-pod-read
+  kubectl delete serviceaccount reporter
+  ```
+
+---
+
+### 📝 **Task 6: Document Your Learnings**
+
+In your blog or notes, include:
+
+* 🔐 What is a ServiceAccount and how it authenticates
+* 🛡️ How authorization is granted using Role/RoleBinding
+* 🔍 Use case for automating actions using SAs in CI/CD or monitoring
+* ✅ Common issues: forgetting to bind the SA, incorrect verbs, wrong namespace
+
+---
+
+### 📢 **Task 7: Share Publicly**
+
+* [ ] Publish your summary on **LinkedIn** or **Twitter**
+* [ ] Include:
+
+  * Screenshots or snippets of your test results
+  * Key learnings and tips
+  * Hashtags:
+
+    ```
+    #Kubernetes #RBAC #ServiceAccount #DevOps #LearningInPublic #40DaysOfKubernetes
+    ```
+
