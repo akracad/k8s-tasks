@@ -1,0 +1,115 @@
+
+---
+
+## ✅ **Kubernetes Task: Node Selectors, Labels, Selectors & Static Pods**
+
+### 🎯 **Objective:**
+
+Explore how to:
+
+* Schedule Pods manually (Static Pods)
+* Label and filter resources using `kubectl`
+* Restart control plane components
+* Understand node-specific pod placement via labels/selectors
+
+---
+
+### 📘 **Task List**
+
+---
+
+#### 🧱 **Task 1: Manually Schedule a Pod Without the Default Scheduler**
+
+* [ ] Create a pod manifest (e.g., `manual-pod.yaml`) and **omit** the `nodeName` field.
+* [ ] Disable the scheduler temporarily (optional) to prevent automatic placement.
+* [ ] Manually assign the pod to a node using `nodeName` in the YAML.
+* [ ] Apply the pod and confirm it schedules correctly:
+
+  ```bash
+  kubectl get pods -o wide
+  ```
+
+---
+
+#### ⚙️ **Task 2: Explore Static Pods**
+
+* [ ] SSH into the **control plane node**.
+* [ ] Navigate to the static pod manifest directory (usually `/etc/kubernetes/manifests/`).
+* [ ] Identify files like:
+
+  * `kube-apiserver.yaml`
+  * `kube-controller-manager.yaml`
+  * `kube-scheduler.yaml`
+* [ ] Restart a control plane component by touching/saving its file (this will auto-restart it via Kubelet):
+
+  ```bash
+  sudo touch /etc/kubernetes/manifests/kube-apiserver.yaml
+  ```
+
+---
+
+#### 🔖 **Task 3: Create Pods with Labels**
+
+* [ ] Create 3 pods using the `nginx` image:
+
+  * `pod1`: label `env=test`
+  * `pod2`: label `env=dev`
+  * `pod3`: label `env=prod`
+
+Example (pod2):
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod2
+  labels:
+    env: dev
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+```
+
+* [ ] Apply all 3 pod manifests.
+
+---
+
+#### 🔍 **Task 4: Filter Pods by Labels**
+
+* [ ] Use the following `kubectl` commands to filter pods:
+
+  * Show only `dev` and `prod`:
+
+    ```bash
+    kubectl get pods -l 'env in (dev,prod)'
+    ```
+
+---
+
+### 📓 **Task 5: Document Learnings**
+
+* [ ] Write a short summary explaining:
+
+  * What are static pods and when to use them
+  * Difference between static pods and scheduled pods
+  * How Kubernetes uses labels and selectors
+  * How to restart control plane components using manifests
+  * How to filter Kubernetes objects using label selectors
+
+---
+
+### 📢 **Task 6: Share Your Learnings**
+
+* [ ] Create a blog post or LinkedIn/Twitter post
+* [ ] Include:
+
+  * YAML snippets
+  * Label filtering commands
+  * Observations on static pods and manual scheduling
+* [ ] Tag relevant communities or mentors
+* [ ] Use hashtags:
+  `#Kubernetes #DevOps #LearningInPublic #40DaysOfKubernetes`
+
+---
+
