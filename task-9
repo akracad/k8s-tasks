@@ -1,0 +1,127 @@
+
+---
+
+## 🧪 **Kubernetes Lab Task: Environment Variables & Multi-Container Pods**
+
+### 🎯 **Objective:**
+
+Understand how to define environment variables and run multiple containers in a single Pod to enable **inter-container communication** and **shared workloads**.
+
+---
+
+### 📘 **Task List**
+
+---
+
+### 🛠️ **Task 1: Create a Multi-Container Pod**
+
+* [ ] Define a Pod with **2 containers** (using a YAML file):
+
+  * **Container 1: `nginx`**
+
+    * Image: `nginx`
+    * Exposes port `80`
+  * **Container 2: `sidecar`**
+
+    * Image: `busybox`
+    * Runs command:
+
+      ```sh
+      sh -c "while true; do echo Hello from sidecar; sleep 10; done"
+      ```
+
+* [ ] Use **environment variables** in at least one container:
+
+  * Example:
+
+    ```yaml
+    env:
+    - name: MY_ENV
+      value: "HelloK8s"
+    ```
+
+* [ ] Apply the YAML:
+
+  ```bash
+  kubectl apply -f multi-container-pod.yaml
+  ```
+
+* [ ] Verify the pod:
+
+  ```bash
+  kubectl get pods
+  kubectl describe pod <pod-name>
+  ```
+
+* [ ] View logs of both containers:
+
+  ```bash
+  kubectl logs <pod-name> -c nginx
+  kubectl logs <pod-name> -c sidecar
+  ```
+
+---
+
+### 🔍 **Task 2: Inspect & Test Inter-Container Communication**
+
+* [ ] Exec into one container:
+
+  ```bash
+  kubectl exec -it <pod-name> -c sidecar -- sh
+  ```
+
+* [ ] Try curling the nginx container from within the pod:
+
+  ```sh
+  wget -qO- localhost
+  ```
+
+✅ This works because containers share the same network namespace (localhost points to the nginx container’s exposed port).
+
+---
+
+### 🧹 **Task 3: Clean Up**
+
+* [ ] Delete the pod after testing:
+
+  ```bash
+  kubectl delete -f multi-container-pod.yaml
+  ```
+
+---
+
+### 📓 **Task 4: Document Your Learnings**
+
+Create a blog post or a markdown summary including:
+
+* 📌 What are multi-container pods?
+* 📌 Why and when to use sidecars
+* 📌 How inter-container communication works
+* 📌 How environment variables are defined and used
+* 📌 Screenshots or sample logs/output
+
+---
+
+### 📢 **Task 5: Share Publicly**
+
+Post a short summary of your hands-on learning on **LinkedIn or Twitter**.
+
+✅ Include:
+
+* Key takeaway(s) from the lab
+* The concept of multi-container design pattern
+* Tag your mentor/org
+* Hashtags:
+  `#Kubernetes #DevOps #LearningInPublic #CKA #100DaysOfKubernetes`
+
+📌 **Example post:**
+
+> Just built my first multi-container Pod in Kubernetes! 🚀 Sidecar pattern + environment variables = clean and modular design. One container served content (nginx) while the other logged activity (busybox). Great hands-on from Day10! #Kubernetes #CKA #LearningInPublic
+
+---
+
+Let me know if you’d like:
+
+* A ready-to-use **multi-container pod YAML**
+* A **Markdown blog template**
+* A **diagram** explaining inter-container communication within a pod
