@@ -1,0 +1,77 @@
+
+---
+
+## 📘 **Task: Deep Dive into Kubernetes vs Standalone Containers**
+
+### 🎯 **Objective:**
+
+Understand the limitations of using standalone containers and how Kubernetes addresses those limitations. Reflect on your learning and share it with the community.
+
+---
+
+### ✅ **Instructions:**
+
+### 1. 🚀 **Explore & Document**
+
+* Write a short explanation of how standalone containers (e.g., using Docker alone) work.
+* List the **challenges** you faced or foresee when running containers without orchestration.
+
+  * E.g., scaling, self-healing, networking, monitoring, configuration.
+
+### 2. 🤖 **Understand Kubernetes**
+
+* Document **how Kubernetes solves each of the challenges** listed above.
+
+  * Use diagrams, comparisons, or real examples.
+
+---
+
+### 3. 🔍 **Evaluate Use Cases**
+
+#### ✅ When to Use Kubernetes (List 5):
+
+Examples:
+
+* Large-scale microservices
+* CI/CD workflows
+* Auto-scaling applications
+* Multi-cloud deployments
+* Canary/blue-green deployments
+
+#### ❌ When **Not** to Use Kubernetes (List 5):
+
+Examples:
+
+* Simple single-container apps
+* Serverless-first workloads
+* Very small teams with no DevOps
+* Apps without scaling needs
+* Quick prototypes or MVPs
+
+---
+
+### 4. 🧠 **Reflect & Share**
+
+* 📓 **Document your learnings** in a concise write-up (blog, Notion, markdown, etc.)
+
+  * Include: what you learned, biggest surprise, key takeaways.
+  * Format: bullets, visual notes, or short-form blog post.
+
+* 📢 **Share publicly**:
+
+  * Post a summary on **LinkedIn or Twitter** with:
+
+    * Hashtags like `#Kubernetes #DevOps #CloudNative`
+    * Tag mentors or peers if applicable
+    * Link to your full blog or repo if available
+
+---
+
+### 🏁 **Deliverables**
+
+* ✅ A write-up or blog with comparisons and use cases
+* ✅ A LinkedIn/Twitter post sharing your learning publicly
+* ✅ Optional: Create a visual (diagram or mindmap) summarizing your takeaways
+
+---
+
