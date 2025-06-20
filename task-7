@@ -1,0 +1,167 @@
+
+---
+
+## 🌐 **Kubernetes Service Types: ClusterIP vs NodePort**
+
+### 🎯 **Objective:**
+
+Learn how Kubernetes Services expose Pods internally and externally. Compare `ClusterIP` vs `NodePort`, and validate reachability from within and outside the cluster.
+
+---
+
+## ✅ **Task Steps**
+
+### 🔧 Step 1: Create Deployment `myapp`
+
+```bash
+kubectl create deployment myapp --image=nginx:1.23.4-alpine --replicas=1
+```
+
+✅ Expose container port 80:
+
+```bash
+kubectl edit deployment myapp
+```
+
+Update the `containers` section:
+
+```yaml
+containers:
+- name: nginx
+  image: nginx:1.23.4-alpine
+  ports:
+  - containerPort: 80
+```
+
+Apply changes and confirm:
+
+```bash
+kubectl get deployments
+kubectl describe deployment myapp
+```
+
+---
+
+### 🛠️ Step 2: Create Service of type `ClusterIP`
+
+```bash
+kubectl expose deployment myapp --name=myapp --port=80 --target-port=80 --type=ClusterIP
+```
+
+✅ Confirm service:
+
+```bash
+kubectl get svc myapp
+```
+
+---
+
+### 📈 Step 3: Scale Deployment to 2 replicas
+
+```bash
+kubectl scale deployment myapp --replicas=2
+kubectl get pods -l app=myapp
+```
+
+---
+
+### 🧪 Step 4: Access Service Internally (via BusyBox)
+
+```bash
+kubectl run busybox --image=busybox --rm -it --restart=Never -- sh
+```
+
+Inside BusyBox shell:
+
+```sh
+wget -qO- http://myapp
+```
+
+✅ You should see the HTML from NGINX.
+
+---
+
+### 🌍 Step 5: Test External Access (Fails)
+
+From your host system:
+
+```bash
+wget http://<ClusterIP>
+```
+
+❌ This **will fail** because `ClusterIP` is internal-only.
+
+---
+
+### 🔁 Step 6: Change Service Type to `NodePort`
+
+```bash
+kubectl patch svc myapp -p '{"spec": {"type": "NodePort"}}'
+kubectl get svc myapp
+```
+
+🔍 Note the new `NodePort` (e.g., 31500)
+
+---
+
+### 🌐 Step 7: Access Service from Outside
+
+From your host (if using KIND or Minikube, use the node’s IP):
+
+```bash
+wget http://<NodeIP>:<NodePort>
+```
+
+✅ You should get a response from NGINX.
+
+---
+
+## 💬 **Discussion**
+
+### ❓ **Can you expose Pods without a Deployment?**
+
+Yes — you can create a Service that points directly to a standalone Pod using labels. But:
+
+* It's not recommended in production
+* Services expect a `selector`, which is easier with Deployments
+* Pods can get deleted/replaced — use Deployments for stability
+
+---
+
+### ❓ **When to Use Which Service Type?**
+
+| Service Type   | Use Case                                                                                      |
+| -------------- | --------------------------------------------------------------------------------------------- |
+| `ClusterIP`    | Default. Internal traffic only within the cluster.                                            |
+| `NodePort`     | Exposes service on a static port across all nodes. Useful for local or basic external access. |
+| `LoadBalancer` | Uses cloud provider’s load balancer (e.g., AWS ELB) to expose the app.                        |
+| `ExternalName` | Maps a service to a DNS name outside the cluster (e.g., for legacy services).                 |
+
+---
+
+## 📢 **Share Your Learning**
+
+### ✍️ Blog/Notes:
+
+* How `ClusterIP` works internally
+* How `NodePort` exposes externally
+* Tools used: `wget`, `busybox`, `kubectl expose`, `kubectl patch`
+* Diagrams showing internal vs external access
+* Difference between service types
+
+---
+
+### 🌍 Social Media Post (LinkedIn/Twitter)
+
+Sample Post:
+
+> Today I explored how Kubernetes exposes applications using Services 🚀. Practiced internal (ClusterIP) vs external (NodePort) access, tested with `busybox`, and understood when to use LoadBalancer vs ClusterIP.
+> \#Kubernetes #DevOps #CKA #LearningInPublic #100DaysOfKubernetes
+
+---
+
+✅ Let me know if you'd like:
+
+* A **Markdown blog template**
+* A **visual diagram** comparing Service types
+* A **KIND node port bind setup guide** (for Mac/Windows/Linux)
