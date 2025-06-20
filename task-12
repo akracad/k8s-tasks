@@ -1,0 +1,115 @@
+
+---
+
+## ✅ **Kubernetes Task: Taints & Tolerations**
+
+### 🎯 Objective:
+
+Learn how to control pod placement in a Kubernetes cluster using **taints** and **tolerations** for fine-grained node selection.
+
+---
+
+### 📘 Task List
+
+---
+
+### 🧱 Task 1: Apply Taints to Worker Nodes
+
+* [ ] Taint `worker01` with `gpu=true:NoSchedule`
+
+  ```bash
+  kubectl taint nodes worker01 gpu=true:NoSchedule
+  ```
+* [ ] Taint `worker02` with `gpu=false:NoSchedule`
+
+  ```bash
+  kubectl taint nodes worker02 gpu=false:NoSchedule
+  ```
+
+---
+
+### 🐳 Task 2: Deploy a Pod Without Toleration
+
+* [ ] Create a pod named `nginx-tainted` using the `nginx` image without any tolerations.
+* [ ] Apply the pod and observe that it stays in the **Pending** state due to taints.
+* [ ] Describe the pod to verify the scheduling failure reason:
+
+  ```bash
+  kubectl describe pod nginx-tainted
+  ```
+
+---
+
+### 🧩 Task 3: Add Toleration for `gpu=true`
+
+* [ ] Modify the pod spec to include the following toleration:
+
+  ```yaml
+  tolerations:
+  - key: "gpu"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+  ```
+* [ ] Reapply the modified pod YAML.
+* [ ] Verify that the pod is now successfully scheduled on `worker01`.
+
+---
+
+### ⚙️ Task 4: Remove Control Plane Taint
+
+* [ ] List taints on the control plane node:
+
+  ```bash
+  kubectl describe node <control-plane-node-name>
+  ```
+* [ ] Remove the default taint (if present):
+
+  ```bash
+  kubectl taint nodes <control-plane-node-name> node-role.kubernetes.io/control-plane-
+  ```
+
+---
+
+### 🗃️ Task 5: Deploy a Redis Pod to Control Plane Node
+
+* [ ] Create a pod using the `redis` image (no toleration required).
+* [ ] Verify that it schedules on the control plane node now that the taint is removed.
+
+---
+
+### 🔁 Task 6: Reapply Taint to Control Plane
+
+* [ ] Add the taint back to restrict the control plane again:
+
+  ```bash
+  kubectl taint nodes <control-plane-node-name> node-role.kubernetes.io/control-plane=:NoSchedule
+  ```
+
+---
+
+### 📝 Task 7: Document Learnings
+
+* [ ] Write a short summary that explains:
+
+  * What are **taints** and **tolerations**
+  * Why we taint nodes (e.g., GPU workloads, restricting critical workloads)
+  * What happens when a pod doesn’t tolerate a taint
+  * Real-world use cases of tolerations
+  * Include YAML snippets, `kubectl` outputs, and observations
+
+---
+
+### 📢 Task 8: Share Publicly
+
+* [ ] Share a summary post on LinkedIn or Twitter.
+* [ ] Include:
+
+  * Your learnings and key takeaways
+  * Screenshot or code snippet
+  * Hashtags:
+    `#Kubernetes #DevOps #LearningInPublic #CKA #40DaysOfKubernetes`
+
+---
+
+
