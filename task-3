@@ -1,0 +1,107 @@
+
+---
+
+## 📘 **Task: Deep Dive into Kubernetes Architecture and Command Flow**
+
+### 🎯 **Objective:**
+
+Gain a strong understanding of Kubernetes internals, visualize its architecture, and share your insights with the community.
+
+---
+
+### ✅ **Task Breakdown**
+
+### 1. 🎥 **Watch & Document**
+
+* Watch the assigned video on Kubernetes architecture and workflows.
+* 📓 Take clear notes and **document your key learnings**.
+
+---
+
+### 2. 🧠 **Understand the Control Plane**
+
+* Write a simple explanation for each **Kubernetes Control Plane component**, using beginner-friendly language:
+
+  | Component                | Function (in simple terms)                                             |
+  | ------------------------ | ---------------------------------------------------------------------- |
+  | API Server               | The front door to the cluster — all kubectl/API calls go through here. |
+  | etcd                     | A database where all cluster data (state) is stored.                   |
+  | Scheduler                | Decides which node runs a new pod.                                     |
+  | Controller Manager       | Watches the cluster and ensures the desired state is maintained.       |
+  | Cloud Controller Manager | Manages cloud-specific logic (e.g., ELB, volume provisioning).         |
+
+---
+
+### 3. 🗺️ **Create Visual Diagrams**
+
+#### a) 📊 **Kubernetes Architecture Diagram**
+
+* Use any tool of your choice:
+
+  * [draw.io](https://app.diagrams.net)
+  * [excalidraw](https://excalidraw.com)
+  * [eraser.io](https://eraser.io)
+* Show components: API server, etcd, Scheduler, Controllers, Kubelet, kube-proxy, Pods, Nodes.
+
+#### b) ⚙️ **Kubectl Command Flow**
+
+* Create a flow diagram that shows:
+
+  1. How a `kubectl apply` or `kubectl get pods` command flows through the system.
+  2. How the API server processes it.
+  3. How the scheduler, controller, and kubelet are involved (if applicable).
+
+---
+
+### 4. 🧩 **Pod vs Container - Simple Write-Up**
+
+* Write a short paragraph explaining:
+
+  * What a **Pod** is and why it exists.
+  * How it's different from a **Container**.
+* Use a relatable analogy if possible.
+
+---
+
+### 5. 🖋️ **Reference Documentation**
+
+* Include links or citations to:
+
+  * The video you watched
+  * Official Kubernetes documentation
+  * Any blogs/articles you used
+
+---
+
+### 6. 📢 **Share Your Learning**
+
+#### a) ✍️ **Blog Post or Documentation**
+
+* Summarize:
+
+  * What you learned
+  * Your visual diagrams
+  * Key takeaways
+  * References
+
+#### b) 🌍 **Make it Public**
+
+* Share a short post on **LinkedIn or Twitter**:
+
+  * Include your diagrams or link to your blog/GitHub/Notion
+  * Use relevant hashtags like `#Kubernetes`, `#DevOps`, `#100DaysOfKubernetes`
+
+---
+
+### ✅ **Final Deliverables**
+
+* [ ] ✅ Notes and learning summary
+* [ ] ✅ Kubernetes architecture diagram
+* [ ] ✅ Kubectl command flow diagram
+* [ ] ✅ Control plane components explained
+* [ ] ✅ Pod vs Container write-up
+* [ ] ✅ Blog post or documentation
+* [ ] ✅ Social media post (LinkedIn/Twitter)
+
+---
+
