@@ -1,0 +1,293 @@
+
+---
+
+ Mastering Deployments, ReplicaSets & Rollouts in Kubernetes**
+
+### 🎯 **Objective:**
+
+Learn how to manage Kubernetes **ReplicaSets and Deployments**, update Pod templates, view rollout history, and troubleshoot YAML issues.
+
+---
+
+## 📦 **PART 1: Working with ReplicaSets**
+
+### 🔹 Task 1: Create a ReplicaSet with 3 replicas of NGINX
+
+```bash
+kubectl create rs nginx-rs --image=nginx --replicas=3
+```
+
+✅ Verify:
+
+```bash
+kubectl get rs
+kubectl get pods
+```
+
+---
+
+### 🔹 Task 2: Update the ReplicaSet YAML to 4 replicas
+
+1. Export and edit:
+
+```bash
+kubectl get rs nginx-rs -o yaml > nginx-rs.yaml
+```
+
+2. Update:
+
+```yaml
+spec:
+  replicas: 4
+```
+
+3. Apply:
+
+```bash
+kubectl apply -f nginx-rs.yaml
+```
+
+✅ Verify:
+
+```bash
+kubectl get rs
+```
+
+---
+
+### 🔹 Task 3: Scale to 6 replicas via command line
+
+```bash
+kubectl scale rs nginx-rs --replicas=6
+```
+
+✅ Check:
+
+```bash
+kubectl get rs
+kubectl get pods
+```
+
+---
+
+## 📦 **PART 2: Managing a Deployment**
+
+### 🔹 Task 1: Create a Deployment
+
+```bash
+kubectl create deployment nginx \
+  --image=nginx:1.23.0 \
+  --replicas=3 \
+  --dry-run=client -o yaml > nginx-deploy.yaml
+```
+
+Edit the file:
+
+```yaml
+metadata:
+  name: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: v1
+  template:
+    metadata:
+      labels:
+        app: v1
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.23.0
+```
+
+Apply it:
+
+```bash
+kubectl apply -f nginx-deploy.yaml
+```
+
+Add label `tier=backend` to the deployment:
+
+```bash
+kubectl label deployment nginx tier=backend
+```
+
+✅ Check:
+
+```bash
+kubectl get deployments
+kubectl get pods --show-labels
+```
+
+---
+
+### 🔹 Task 2: Update image to nginx:1.23.4
+
+```bash
+kubectl set image deployment/nginx nginx=nginx:1.23.4
+```
+
+✅ Verify:
+
+```bash
+kubectl rollout status deployment/nginx
+kubectl describe deployment nginx | grep Image
+```
+
+---
+
+### 🔹 Task 3: Annotate the reason for change
+
+```bash
+kubectl annotate deployment nginx kubernetes.io/change-cause="Pick up patch version"
+```
+
+---
+
+### 🔹 Task 4: Scale to 5 replicas
+
+```bash
+kubectl scale deployment nginx --replicas=5
+```
+
+✅ Check:
+
+```bash
+kubectl get pods
+```
+
+---
+
+### 🔹 Task 5: View rollout history
+
+```bash
+kubectl rollout history deployment nginx
+```
+
+---
+
+### 🔹 Task 6: Roll back to revision 1
+
+```bash
+kubectl rollout undo deployment nginx --to-revision=1
+```
+
+✅ Confirm rollback:
+
+```bash
+kubectl describe deployment nginx | grep Image
+kubectl get pods
+```
+
+---
+
+## 🛠️ **PART 3: YAML Troubleshooting**
+
+---
+
+### ❌ Broken Deployment YAML 1
+
+```yaml
+apiVersion: v1        ❌ Should be apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deploy
+  labels:
+    env: demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      env: demo
+  template:
+    metadata:
+      name: nginx        ❌ Invalid inside pod template, remove it
+      labels:
+        env: demo
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        ports:
+        - containerPort: 80
+```
+
+✅ Fixed YAML:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deploy
+  labels:
+    env: demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      env: demo
+  template:
+    metadata:
+      labels:
+        env: demo
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        ports:
+        - containerPort: 80
+```
+
+---
+
+### ❌ Broken Deployment YAML 2 (Selector mismatch)
+
+```yaml
+selector:
+  matchLabels:
+    env: dev      ❌ Mismatch with template labels (demo)
+```
+
+✅ Fix the selector to match labels:
+
+```yaml
+selector:
+  matchLabels:
+    env: demo
+```
+
+Then apply again:
+
+```bash
+kubectl apply -f fixed-deploy.yaml
+kubectl get deployments
+```
+
+---
+
+## 🧠 **PART 4: Document & Share Learnings**
+
+### ✍️ Document:
+
+* ✅ The role of ReplicaSets vs Deployments
+* ✅ How to perform rolling updates and rollbacks
+* ✅ Common YAML mistakes and how to troubleshoot them
+* ✅ Use of `kubectl rollout`, `set image`, `scale`, `annotate`
+
+---
+
+### 📢 Share on LinkedIn / Twitter:
+
+* Summary of what you practiced
+* Screenshots (optional)
+* Use hashtags:
+
+  > `#Kubernetes #CKA #DevOps #LearningInPublic #100DaysOfKubernetes`
+
+✅ Example post:
+
+> Today I practiced scaling ReplicaSets, managing rollouts in Deployments, and troubleshooting YAML errors in Kubernetes 🚀. Also learned how to annotate rollout history and roll back to previous revisions! #Kubernetes #DevOps #CKA #LearningInPublic
+
+---
+
